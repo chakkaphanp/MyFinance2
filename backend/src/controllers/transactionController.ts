@@ -1,16 +1,22 @@
 import { Response } from 'express';
 import { TransactionService } from '../services/transactionService.js';
 import { AuthRequest } from '../middleware/auth.js';
+import { TransactionSchema } from '../schemas/validation.js';
 
 const transactionService = new TransactionService();
 
 export const createTransaction = async (req: AuthRequest, res: Response) => {
   try {
-    const { type, category, amount, description, date } = req.body;
+    const validation = TransactionSchema.safeParse(req.body);
     
-    if (!type || !category || !amount || !date) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!validation.success) {
+      return res.status(400).json({ 
+        error: 'Validation failed',
+        details: validation.error.errors 
+      });
     }
+    
+    const { type, category, amount, description, date } = validation.data;
     
     const transaction = await transactionService.createTransaction(
       req.userId!,
@@ -23,7 +29,8 @@ export const createTransaction = async (req: AuthRequest, res: Response) => {
     
     res.status(201).json(transaction);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    console.error('Error creating transaction:', error);
+    res.status(500).json({ error: error.message || 'Failed to create transaction' });
   }
 };
 
@@ -35,7 +42,8 @@ export const getTransactions = async (req: AuthRequest, res: Response) => {
     const result = await transactionService.getTransactions(req.userId!, page, pageSize);
     res.json(result);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    console.error('Error fetching transactions:', error);
+    res.status(500).json({ error: error.message || 'Failed to fetch transactions' });
   }
 };
 
@@ -47,7 +55,8 @@ export const getTransaction = async (req: AuthRequest, res: Response) => {
     );
     res.json(transaction);
   } catch (error: any) {
-    res.status(404).json({ error: error.message });
+    console.error('Error fetching transaction:', error);
+    res.status(404).json({ error: error.message || 'Transaction not found' });
   }
 };
 
@@ -60,7 +69,8 @@ export const updateTransaction = async (req: AuthRequest, res: Response) => {
     );
     res.json(transaction);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    console.error('Error updating transaction:', error);
+    res.status(500).json({ error: error.message || 'Failed to update transaction' });
   }
 };
 
@@ -69,6 +79,7 @@ export const deleteTransaction = async (req: AuthRequest, res: Response) => {
     await transactionService.deleteTransaction(req.params.id, req.userId!);
     res.status(204).send();
   } catch (error: any) {
-    res.status(404).json({ error: error.message });
+    console.error('Error deleting transaction:', error);
+    res.status(500).json({ error: error.message || 'Failed to delete transaction' });
   }
 };

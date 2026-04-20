@@ -5,6 +5,7 @@ import { TransactionModal, TransactionData } from '../components/TransactionModa
 import { TransactionList } from '../components/TransactionList';
 import { Plus } from 'lucide-react';
 import { transactionAPI } from '../services/api';
+import { useNotificationStore } from '../store/notificationStore';
 
 interface Transaction {
   id: string;
@@ -22,6 +23,7 @@ export const TransactionsPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
+  const showNotification = useNotificationStore((state) => state.show);
 
   useEffect(() => {
     loadTransactions();
@@ -35,6 +37,7 @@ export const TransactionsPage: React.FC = () => {
       setHasMore(response.data.hasMore);
     } catch (error) {
       console.error('Failed to load transactions', error);
+      showNotification('Failed to load transactions', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -46,8 +49,11 @@ export const TransactionsPage: React.FC = () => {
       await transactionAPI.create(data);
       setPage(1);
       await loadTransactions();
-    } catch (error) {
+      showNotification('Transaction added successfully!', 'success');
+    } catch (error: any) {
       console.error('Failed to add transaction', error);
+      const errorMessage = error.response?.data?.error || 'Failed to add transaction';
+      showNotification(errorMessage, 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -59,8 +65,10 @@ export const TransactionsPage: React.FC = () => {
     try {
       await transactionAPI.delete(id);
       await loadTransactions();
+      showNotification('Transaction deleted successfully!', 'success');
     } catch (error) {
       console.error('Failed to delete transaction', error);
+      showNotification('Failed to delete transaction', 'error');
     }
   };
 
