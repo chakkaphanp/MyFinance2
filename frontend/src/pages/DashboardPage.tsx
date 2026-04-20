@@ -184,7 +184,7 @@ export const DashboardPage: React.FC = () => {
                         outerRadius={80}
                         label
                       >
-                        {expenseData.map((entry, index) => (
+                        {expenseData.map((_entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
@@ -211,7 +211,7 @@ export const DashboardPage: React.FC = () => {
                         outerRadius={80}
                         label
                       >
-                        {incomeData.map((entry, index) => (
+                        {incomeData.map((_entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>

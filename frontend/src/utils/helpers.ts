@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-
 export class ApiError extends Error {
   constructor(
     public status: number,
