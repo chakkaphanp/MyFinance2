@@ -41,21 +41,18 @@ export class DashboardService {
   }
   
   async getCategoryBreakdown(userId: string, month?: number, year?: number) {
-    let query = { where: { userId } };
+    const where: any = { userId };
     
     if (month !== undefined && year !== undefined) {
       const startDate = new Date(year, month, 1);
       const endDate = new Date(year, month + 1, 0);
-      query.where = {
-        ...query.where,
-        date: {
-          gte: startDate,
-          lte: endDate,
-        },
+      where.date = {
+        gte: startDate,
+        lte: endDate,
       };
     }
     
-    const transactions = await prisma.transaction.findMany(query);
+    const transactions = await prisma.transaction.findMany({ where });
     
     const expenseMap: { [key: string]: { amount: number; count: number } } = {};
     const incomeMap: { [key: string]: { amount: number; count: number } } = {};
