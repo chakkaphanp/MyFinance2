@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, UtensilsCrossed, Truck, Music, Zap, Heart, ShoppingBag, HelpCircle, Briefcase, Code, TrendingUp } from 'lucide-react';
+import { Button } from './Button';
+import { Input } from './Input';
+import { useAuthStore } from '../store/authStore';
 
 interface BudgetModalProps {
   isOpen: boolean;
@@ -18,6 +21,22 @@ export interface BudgetFormData {
   year: number;
 }
 
+const CATEGORY_CONFIG = {
+  // Expense categories
+  Food: { icon: UtensilsCrossed, color: 'bg-orange-100 text-orange-600 border-orange-300' },
+  Transport: { icon: Truck, color: 'bg-blue-100 text-blue-600 border-blue-300' },
+  Entertainment: { icon: Music, color: 'bg-purple-100 text-purple-600 border-purple-300' },
+  Utilities: { icon: Zap, color: 'bg-yellow-100 text-yellow-600 border-yellow-300' },
+  Healthcare: { icon: Heart, color: 'bg-red-100 text-red-600 border-red-300' },
+  Shopping: { icon: ShoppingBag, color: 'bg-pink-100 text-pink-600 border-pink-300' },
+  // Income categories
+  Salary: { icon: Briefcase, color: 'bg-green-100 text-green-600 border-green-300' },
+  Freelance: { icon: Code, color: 'bg-blue-100 text-blue-600 border-blue-300' },
+  Investment: { icon: TrendingUp, color: 'bg-purple-100 text-purple-600 border-purple-300' },
+  // Default
+  Other: { icon: HelpCircle, color: 'bg-gray-100 text-gray-600 border-gray-300' },
+};
+
 export const BudgetModal: React.FC<BudgetModalProps> = ({
   isOpen,
   onClose,
@@ -27,6 +46,7 @@ export const BudgetModal: React.FC<BudgetModalProps> = ({
   categories,
   isLoading,
 }) => {
+  const { currency } = useAuthStore();
   const today = new Date();
   const [formData, setFormData] = useState<BudgetFormData>({
     category: '',
@@ -34,12 +54,25 @@ export const BudgetModal: React.FC<BudgetModalProps> = ({
     month: month || today.getMonth() + 1,
     year: year || today.getFullYear(),
   });
+  const [amountInput, setAmountInput] = useState<string>('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        category: '',
+        limitAmount: 0,
+        month: month || today.getMonth() + 1,
+        year: year || today.getFullYear(),
+      });
+      setAmountInput('');
+    }
+  }, [isOpen, month, year]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'limitAmount' ? parseFloat(value) : parseInt(value),
+      [name]: parseInt(value),
     }));
   };
 
@@ -50,75 +83,73 @@ export const BudgetModal: React.FC<BudgetModalProps> = ({
       return;
     }
     onSubmit(formData);
-    setFormData({
-      category: '',
-      limitAmount: 0,
-      month: today.getMonth() + 1,
-      year: today.getFullYear(),
-    });
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Create Budget</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
-          >
-            <X className="w-6 h-6" />
+      <div className="bg-gradient-to-br from-clay-white to-clay-light rounded p-6 w-96 max-h-screen overflow-y-auto" style={{ borderRadius: '24px', boxShadow: '0 20px 60px rgba(255, 159, 90, 0.2)' }}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-clay-dark">Create Budget</h2>
+          <button onClick={onClose} className="text-clay-dark opacity-50 hover:opacity-100 transition-opacity" style={{ borderRadius: '20px' }}>
+            <X size={24} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Category
-            </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="label">Category</label>
+            <div className="grid grid-cols-4 gap-2">
+              {categories.map((cat) => {
+                const config = CATEGORY_CONFIG[cat as keyof typeof CATEGORY_CONFIG] || CATEGORY_CONFIG.Other;
+                const IconComponent = config.icon;
+                const isSelected = formData.category === cat;
+
+                return (
+                  <button
+                    type="button"
+                    key={cat}
+                    onClick={() => setFormData({ ...formData, category: cat })}
+                    className={`flex flex-col items-center justify-center py-3 px-2 border-2 transition duration-300 ${
+                      isSelected
+                        ? `${config.color} border-current shadow-md scale-105`
+                        : `${config.color} border-transparent hover:opacity-80`
+                    }`}
+                    style={{ borderRadius: '20px' }}
+                    title={cat}
+                  >
+                    <IconComponent size={20} className="mb-1" />
+                    <span className="text-xs font-medium text-center">{cat}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Monthly Limit ($)
-            </label>
-            <input
-              type="number"
-              name="limitAmount"
-              value={formData.limitAmount}
-              onChange={handleChange}
-              placeholder="0.00"
-              step="0.01"
-              min="0"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <Input
+            label={`Monthly Limit (${currency})`}
+            type="number"
+            value={amountInput}
+            onChange={(e) => {
+              setAmountInput(e.target.value);
+              setFormData({ ...formData, limitAmount: e.target.value ? parseFloat(e.target.value) : 0 });
+            }}
+            placeholder="0.00"
+            min="0"
+            step="0.01"
+            required
+          />
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3 mb-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Month
-              </label>
+              <label className="label">Month</label>
               <select
                 name="month"
                 value={formData.month}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ borderRadius: '12px' }}
               >
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
                   <option key={m} value={m}>
@@ -128,14 +159,13 @@ export const BudgetModal: React.FC<BudgetModalProps> = ({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Year
-              </label>
+              <label className="label">Year</label>
               <select
                 name="year"
                 value={formData.year}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{ borderRadius: '12px' }}
               >
                 {Array.from({ length: 3 }, (_, i) => today.getFullYear() - 1 + i).map((y) => (
                   <option key={y} value={y}>
@@ -146,21 +176,17 @@ export const BudgetModal: React.FC<BudgetModalProps> = ({
             </div>
           </div>
 
-          <div className="flex gap-2 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-            >
+          <div className="flex gap-3">
+            <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={isLoading}
-              className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
+              isLoading={isLoading}
+              className="flex-1"
             >
-              {isLoading ? 'Creating...' : 'Create Budget'}
-            </button>
+              Create Budget
+            </Button>
           </div>
         </form>
       </div>

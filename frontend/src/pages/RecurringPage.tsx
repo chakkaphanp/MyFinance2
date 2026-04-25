@@ -4,6 +4,7 @@ import { RecurringTransactionItem } from '../components/RecurringTransactionItem
 import { RecurringModal, RecurringFormData } from '../components/RecurringModal';
 import { recurringAPI } from '../services/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { useAuthStore } from '../store/authStore';
 
 interface RecurringTransaction {
   id: string;
@@ -16,6 +17,7 @@ interface RecurringTransaction {
 }
 
 export const RecurringPage: React.FC = () => {
+  const { currency } = useAuthStore();
   const [recurring, setRecurring] = useState<RecurringTransaction[]>([]);
   const [upcoming, setUpcoming] = useState<RecurringTransaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -113,7 +115,7 @@ export const RecurringPage: React.FC = () => {
             <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-green-500">
               <p className="text-gray-600 text-sm">Monthly Income</p>
               <p className="text-2xl font-bold text-green-600">
-                ${recurring
+                {currency} {recurring
                   .filter((r) => r.isActive && r.type === 'INCOME')
                   .reduce((sum, r) => sum + r.amount, 0)
                   .toFixed(2)}
@@ -122,7 +124,7 @@ export const RecurringPage: React.FC = () => {
             <div className="bg-white rounded-lg shadow-sm p-6 border-l-4 border-red-500">
               <p className="text-gray-600 text-sm">Monthly Expenses</p>
               <p className="text-2xl font-bold text-red-600">
-                ${recurring
+                {currency} {recurring
                   .filter((r) => r.isActive && r.type === 'EXPENSE')
                   .reduce((sum, r) => sum + r.amount, 0)
                   .toFixed(2)}
@@ -166,7 +168,7 @@ export const RecurringPage: React.FC = () => {
                         </p>
                       </div>
                       <p className={`font-semibold ${trans.type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>
-                        {trans.type === 'INCOME' ? '+' : '-'}${trans.amount.toFixed(2)}
+                        {trans.type === 'INCOME' ? '+' : '-'}{currency} {trans.amount.toFixed(2)}
                       </p>
                     </div>
                   ))}

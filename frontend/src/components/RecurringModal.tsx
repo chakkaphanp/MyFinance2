@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, UtensilsCrossed, Truck, Music, Zap, Heart, ShoppingBag, HelpCircle, Briefcase, Code, TrendingUp } from 'lucide-react';
+import { Button } from './Button';
+import { Input } from './Input';
+import { useAuthStore } from '../store/authStore';
 
 interface RecurringModalProps {
   isOpen: boolean;
@@ -21,13 +24,34 @@ export interface RecurringFormData {
   endDate?: string;
 }
 
+const CATEGORIES = {
+  INCOME: ['Salary', 'Freelance', 'Investment', 'Other'],
+  EXPENSE: ['Food', 'Transport', 'Entertainment', 'Utilities', 'Healthcare', 'Shopping', 'Other'],
+};
+
+const CATEGORY_CONFIG = {
+  // Expense categories
+  Food: { icon: UtensilsCrossed, color: 'bg-orange-100 text-orange-600 border-orange-300' },
+  Transport: { icon: Truck, color: 'bg-blue-100 text-blue-600 border-blue-300' },
+  Entertainment: { icon: Music, color: 'bg-purple-100 text-purple-600 border-purple-300' },
+  Utilities: { icon: Zap, color: 'bg-yellow-100 text-yellow-600 border-yellow-300' },
+  Healthcare: { icon: Heart, color: 'bg-red-100 text-red-600 border-red-300' },
+  Shopping: { icon: ShoppingBag, color: 'bg-pink-100 text-pink-600 border-pink-300' },
+  // Income categories
+  Salary: { icon: Briefcase, color: 'bg-green-100 text-green-600 border-green-300' },
+  Freelance: { icon: Code, color: 'bg-blue-100 text-blue-600 border-blue-300' },
+  Investment: { icon: TrendingUp, color: 'bg-purple-100 text-purple-600 border-purple-300' },
+  // Default
+  Other: { icon: HelpCircle, color: 'bg-gray-100 text-gray-600 border-gray-300' },
+};
+
 export const RecurringModal: React.FC<RecurringModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  categories,
   isLoading,
 }) => {
+  const { currency } = useAuthStore();
   const today = new Date().toISOString().split('T')[0];
   const [formData, setFormData] = useState<RecurringFormData>({
     type: 'EXPENSE',
@@ -38,14 +62,29 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
     startDate: today,
   });
 
+  const [amountInput, setAmountInput] = useState<string>('');
   const [showAdvanced, setShowAdvanced] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        type: 'EXPENSE',
+        category: '',
+        amount: 0,
+        description: '',
+        frequency: 'MONTHLY',
+        startDate: new Date().toISOString().split('T')[0],
+      });
+      setAmountInput('');
+      setShowAdvanced(false);
+    }
+  }, [isOpen]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]:
-        name === 'amount' ? parseFloat(value) :
         name === 'dayOfMonth' || name === 'dayOfWeek' ? (value ? parseInt(value) : undefined) :
         value,
     }));
@@ -58,141 +97,151 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
       return;
     }
     onSubmit(formData);
-    setFormData({
-      type: 'EXPENSE',
-      category: '',
-      amount: 0,
-      description: '',
-      frequency: 'MONTHLY',
-      startDate: today,
-    });
-    setShowAdvanced(false);
   };
 
   if (!isOpen) return null;
 
+  const currentCategories = CATEGORIES[formData.type];
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md my-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-800">Add Recurring Transaction</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 transition-colors"
-          >
-            <X className="w-6 h-6" />
+      <div className="bg-gradient-to-br from-clay-white to-clay-light rounded p-6 w-96 max-h-screen overflow-y-auto my-8" style={{ borderRadius: '24px', boxShadow: '0 20px 60px rgba(255, 159, 90, 0.2)' }}>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-clay-dark">Add Recurring</h2>
+          <button onClick={onClose} className="text-clay-dark opacity-50 hover:opacity-100 transition-opacity" style={{ borderRadius: '20px' }}>
+            <X size={24} />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <select
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label className="label">Type</label>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, type: 'EXPENSE', category: '' })}
+                className={`flex-1 py-2 px-4 font-medium transition duration-300 rounded-full ${
+                  formData.type === 'EXPENSE'
+                    ? 'bg-gradient-to-r from-clay-coral to-clay-pink text-white'
+                    : 'bg-clay-light text-clay-dark hover:bg-clay-gray'
+                }`}
+                style={{ borderRadius: '20px' }}
               >
-                <option value="EXPENSE">Expense</option>
-                <option value="INCOME">Income</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Frequency</label>
-              <select
-                name="frequency"
-                value={formData.frequency}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                Expense
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, type: 'INCOME', category: '' })}
+                className={`flex-1 py-2 px-4 font-medium transition duration-300 rounded-full ${
+                  formData.type === 'INCOME'
+                    ? 'bg-gradient-to-r from-clay-primary to-clay-secondary text-white'
+                    : 'bg-clay-light text-clay-dark hover:bg-clay-gray'
+                }`}
+                style={{ borderRadius: '20px' }}
               >
-                <option value="DAILY">Daily</option>
-                <option value="WEEKLY">Weekly</option>
-                <option value="MONTHLY">Monthly</option>
-                <option value="YEARLY">Yearly</option>
-              </select>
+                Income
+              </button>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+          <div className="mb-4">
+            <label className="label">Frequency</label>
             <select
-              name="category"
-              value={formData.category}
+              name="frequency"
+              value={formData.frequency}
               onChange={handleChange}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{ borderRadius: '12px' }}
             >
-              <option value="">Select Category</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
+              <option value="DAILY">Daily</option>
+              <option value="WEEKLY">Weekly</option>
+              <option value="MONTHLY">Monthly</option>
+              <option value="YEARLY">Yearly</option>
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount ($)</label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              placeholder="0.00"
-              step="0.01"
-              min="0"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div className="mb-4">
+            <label className="label">Category</label>
+            <div className="grid grid-cols-4 gap-2">
+              {currentCategories.map((cat) => {
+                const config = CATEGORY_CONFIG[cat as keyof typeof CATEGORY_CONFIG] || CATEGORY_CONFIG.Other;
+                const IconComponent = config.icon;
+                const isSelected = formData.category === cat;
+
+                return (
+                  <button
+                    type="button"
+                    key={cat}
+                    onClick={() => setFormData({ ...formData, category: cat })}
+                    className={`flex flex-col items-center justify-center py-3 px-2 border-2 transition duration-300 ${
+                      isSelected
+                        ? `${config.color} border-current shadow-md scale-105`
+                        : `${config.color} border-transparent hover:opacity-80`
+                    }`}
+                    style={{ borderRadius: '20px' }}
+                    title={cat}
+                  >
+                    <IconComponent size={20} className="mb-1" />
+                    <span className="text-xs font-medium text-center">{cat}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <input
-              type="text"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="e.g., Netflix Subscription"
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          <Input
+            label={`Amount (${currency})`}
+            type="number"
+            value={amountInput}
+            onChange={(e) => {
+              setAmountInput(e.target.value);
+              setFormData({ ...formData, amount: e.target.value ? parseFloat(e.target.value) : 0 });
+            }}
+            placeholder="0.00"
+            min="0"
+            step="0.01"
+            required
+          />
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-              <input
-                type="date"
-                name="startDate"
-                value={formData.startDate}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">End Date (Optional)</label>
-              <input
-                type="date"
-                name="endDate"
-                value={formData.endDate || ''}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+          <Input
+            label="Description"
+            value={formData.description}
+            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            placeholder="e.g., Netflix Subscription"
+            required
+          />
+
+          <div className="grid grid-cols-2 gap-3 mb-2">
+            <Input
+              label="Start Date"
+              type="date"
+              name="startDate"
+              value={formData.startDate}
+              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+              required
+            />
+            <Input
+              label="End Date (Optional)"
+              type="date"
+              name="endDate"
+              value={formData.endDate || ''}
+              onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+            />
           </div>
 
           <button
             type="button"
             onClick={() => setShowAdvanced(!showAdvanced)}
-            className="text-sm text-blue-500 hover:text-blue-600"
+            className="text-sm text-clay-primary hover:text-clay-secondary mb-4"
           >
             {showAdvanced ? '▼ Hide Advanced Options' : '▶ Show Advanced Options'}
           </button>
 
           {showAdvanced && (
-            <div className="border-t pt-3 space-y-3">
+            <div className="border-t border-gray-200 pt-3 space-y-3 mb-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Day of Month</label>
+                  <label className="label">Day of Month</label>
                   <input
                     type="number"
                     name="dayOfMonth"
@@ -202,15 +251,17 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
                     max="31"
                     placeholder="1-31"
                     className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{ borderRadius: '12px' }}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Day of Week</label>
+                  <label className="label">Day of Week</label>
                   <select
                     name="dayOfWeek"
                     value={formData.dayOfWeek || ''}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{ borderRadius: '12px' }}
                   >
                     <option value="">Select Day</option>
                     <option value="0">Sunday</option>
@@ -226,21 +277,17 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
             </div>
           )}
 
-          <div className="flex gap-2 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded hover:bg-gray-50 transition-colors"
-            >
+          <div className="flex gap-3">
+            <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={isLoading}
-              className="flex-1 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors disabled:opacity-50"
+              isLoading={isLoading}
+              className="flex-1"
             >
-              {isLoading ? 'Creating...' : 'Create'}
-            </button>
+              Create
+            </Button>
           </div>
         </form>
       </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 
 interface BudgetCardProps {
   category: string;
@@ -18,6 +19,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
   percentUsed,
   isExceeded,
 }) => {
+  const { currency } = useAuthStore();
   const getColorClass = () => {
     if (isExceeded) return 'border-red-500 bg-red-50';
     if (percentUsed >= 80) return 'border-yellow-500 bg-yellow-50';
@@ -42,7 +44,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
       <div className="flex justify-between items-start mb-3">
         <div>
           <h3 className="font-semibold text-gray-800">{category}</h3>
-          <p className="text-sm text-gray-600">${spent.toFixed(2)} / ${limitAmount.toFixed(2)}</p>
+          <p className="text-sm text-gray-600">{currency} {spent.toFixed(2)} / {currency} {limitAmount.toFixed(2)}</p>
         </div>
         {getAlertIcon()}
       </div>
@@ -66,14 +68,14 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
         <div>
           <p className="text-gray-600">Remaining</p>
           <p className={`font-semibold ${remaining >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            ${remaining.toFixed(2)}
+            {currency} {remaining.toFixed(2)}
           </p>
         </div>
       </div>
 
       {isExceeded && (
         <div className="mt-2 p-2 bg-red-200 text-red-800 rounded text-xs">
-          ⚠️ Budget exceeded by ${(spent - limitAmount).toFixed(2)}
+          ⚠️ Budget exceeded by {currency} {(spent - limitAmount).toFixed(2)}
         </div>
       )}
       {percentUsed >= 80 && !isExceeded && (

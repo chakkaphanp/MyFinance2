@@ -1,5 +1,6 @@
 import React from 'react';
 import { Calendar, Trash2 } from 'lucide-react';
+import { useAuthStore } from '../store/authStore';
 
 interface RecurringTransactionItemProps {
   id: string;
@@ -24,6 +25,7 @@ export const RecurringTransactionItem: React.FC<RecurringTransactionItemProps> =
   onToggle,
   onDelete,
 }) => {
+  const { currency } = useAuthStore();
   const formatDate = (date?: Date) => {
     if (!date) return 'N/A';
     return new Date(date).toLocaleDateString('en-US', {
@@ -49,7 +51,7 @@ export const RecurringTransactionItem: React.FC<RecurringTransactionItemProps> =
         </div>
         <div className="text-right">
           <p className={`font-bold text-lg ${type === 'INCOME' ? 'text-green-600' : 'text-red-600'}`}>
-            {type === 'INCOME' ? '+' : '-'}${amount.toFixed(2)}
+            {type === 'INCOME' ? '+' : '-'}{currency} {amount.toFixed(2)}
           </p>
           {!isActive && <p className="text-xs text-gray-500">Inactive</p>}
         </div>
