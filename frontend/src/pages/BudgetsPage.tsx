@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, AlertCircle } from 'lucide-react';
+import { Navbar } from '../components/Navbar';
 import { BudgetCard } from '../components/BudgetCard';
 import { BudgetModal, BudgetFormData } from '../components/BudgetModal';
 import { budgetAPI } from '../services/api';
@@ -98,7 +99,8 @@ export const BudgetsPage: React.FC = () => {
   const warning = alerts.filter((a) => a.alertType === 'WARNING').length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-clay-light to-clay-white">
+      <Navbar />
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
