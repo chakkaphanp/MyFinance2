@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, TrendingUp } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 interface BudgetCardProps {
   category: string;

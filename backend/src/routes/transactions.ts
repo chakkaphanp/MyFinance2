@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth.js';
+import { auth } from '../middleware/auth.js';
 import {
   createTransaction,
   getTransactions,
@@ -10,7 +10,7 @@ import {
 
 const router = Router();
 
-router.use(authenticate);
+router.use(auth);
 
 router.post('/', createTransaction);
 router.get('/', getTransactions);

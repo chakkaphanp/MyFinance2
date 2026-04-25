@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Plus, AlertCircle } from 'lucide-react';
 import { BudgetCard } from '../components/BudgetCard';
 import { BudgetModal, BudgetFormData } from '../components/BudgetModal';
-import { budgetAPI, transactionAPI } from '../services/api';
+import { budgetAPI } from '../services/api';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
 interface BudgetWithSpending {

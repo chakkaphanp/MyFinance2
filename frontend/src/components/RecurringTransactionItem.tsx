@@ -1,5 +1,5 @@
 import React from 'react';
-import { Calendar, AlertCircle, Trash2 } from 'lucide-react';
+import { Calendar, Trash2 } from 'lucide-react';
 
 interface RecurringTransactionItemProps {
   id: string;

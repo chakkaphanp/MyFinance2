@@ -93,9 +93,6 @@ export const RecurringPage: React.FC = () => {
   };
 
   const activeCount = recurring.filter((r) => r.isActive).length;
-  const totalRecurringAmount = recurring
-    .filter((r) => r.isActive)
-    .reduce((sum, r) => sum + (r.type === 'INCOME' ? r.amount : -r.amount), 0);
 
   return (
     <div className="min-h-screen bg-gray-50">

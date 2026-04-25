@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth.js';
+import { auth } from '../middleware/auth.js';
 import {
   getDashboardStats,
   getCategoryBreakdown,
@@ -8,7 +8,7 @@ import {
 
 const router = Router();
 
-router.use(authenticate);
+router.use(auth);
 
 router.get('/stats', getDashboardStats);
 router.get('/category-breakdown', getCategoryBreakdown);

@@ -173,7 +173,7 @@ export class RecurringTransactionService {
 
         // Update last run date
         await this.updateRecurringTransaction(userId, rec.id, {
-          lastRunDate: nextOccurrence,
+          lastRunDate: nextOccurrence.toISOString(),
         });
 
         processedTransactions.push(transaction);
