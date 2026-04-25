@@ -21,6 +21,7 @@ export interface UpdateRecurringTransactionInput {
   dayOfWeek?: number;
   endDate?: Date;
   isActive?: boolean;
+  lastRunDate?: string;
 }
 
 export class RecurringTransactionService {
