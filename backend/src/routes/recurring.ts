@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { auth } from '../middleware/auth';
+import { auth } from '../middleware/auth.js';
 import {
   createRecurringTransaction,
   getRecurringTransactions,
@@ -7,7 +7,7 @@ import {
   updateRecurringTransaction,
   deleteRecurringTransaction,
   processRecurringTransactions,
-} from '../controllers/recurringTransactionController';
+} from '../controllers/recurringTransactionController.js';
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { recurringTransactionService } from '../services/recurringTransactionService';
+import { recurringTransactionService } from '../services/recurringTransactionService.js';
 
 interface AuthRequest extends Request {
   userId?: string;
