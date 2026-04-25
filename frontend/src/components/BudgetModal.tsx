@@ -110,7 +110,7 @@ export const BudgetModal: React.FC<BudgetModalProps> = ({
                   <button
                     type="button"
                     key={cat}
-                    onClick={() => setFormData({ ...formData, category: cat })}
+                    onClick={() => setFormData(prev => ({ ...prev, category: cat }))}
                     className={`flex flex-col items-center justify-center py-3 px-2 border-2 transition duration-300 ${
                       isSelected
                         ? `${config.color} border-current shadow-md scale-105`
@@ -133,7 +133,7 @@ export const BudgetModal: React.FC<BudgetModalProps> = ({
             value={amountInput}
             onChange={(e) => {
               setAmountInput(e.target.value);
-              setFormData({ ...formData, limitAmount: e.target.value ? parseFloat(e.target.value) : 0 });
+              setFormData(prev => ({ ...prev, limitAmount: e.target.value ? parseFloat(e.target.value) : 0 }));
             }}
             placeholder="0.00"
             min="0"

@@ -72,9 +72,9 @@ export const BudgetsPage: React.FC = () => {
       setIsModalOpen(false);
       await loadBudgets();
       await loadAlerts();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating budget:', error);
-      alert('Failed to create budget');
+      alert(error.response?.data?.error || 'Failed to create budget');
     } finally {
       setIsLoading(false);
     }

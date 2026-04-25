@@ -26,17 +26,17 @@ export const createRecurringTransaction = async (req: AuthRequest, res: Response
         amount: parseFloat(amount),
         description,
         frequency,
-        dayOfMonth: dayOfMonth ? parseInt(dayOfMonth) : undefined,
-        dayOfWeek: dayOfWeek ? parseInt(dayOfWeek) : undefined,
+        dayOfMonth: dayOfMonth !== undefined && dayOfMonth !== null ? parseInt(dayOfMonth) : undefined,
+        dayOfWeek: dayOfWeek !== undefined && dayOfWeek !== null ? parseInt(dayOfWeek) : undefined,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : undefined,
       }
     );
 
     res.json(recurringTransaction);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating recurring transaction:', error);
-    res.status(500).json({ error: 'Failed to create recurring transaction' });
+    res.status(500).json({ error: 'Failed to create recurring transaction: ' + (error.message || '') });
   }
 };
 

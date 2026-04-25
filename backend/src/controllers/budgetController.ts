@@ -26,8 +26,11 @@ export const createBudget = async (req: AuthRequest, res: Response) => {
     });
 
     res.json(budget);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating budget:', error);
+    if (error.code === 'P2002') {
+      return res.status(400).json({ error: 'A budget for this category and month already exists.' });
+    }
     res.status(500).json({ error: 'Failed to create budget' });
   }
 };

@@ -65,9 +65,9 @@ export const RecurringPage: React.FC = () => {
       await recurringAPI.create(data);
       setIsModalOpen(false);
       await loadRecurring();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating recurring transaction:', error);
-      alert('Failed to create recurring transaction');
+      alert(error.response?.data?.error || 'Failed to create recurring transaction');
     } finally {
       setIsLoading(false);
     }

@@ -119,7 +119,7 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => setFormData({ ...formData, type: 'EXPENSE', category: '' })}
+                onClick={() => setFormData(prev => ({ ...prev, type: 'EXPENSE', category: '' }))}
                 className={`flex-1 py-2 px-4 font-medium transition duration-300 rounded-full ${
                   formData.type === 'EXPENSE'
                     ? 'bg-gradient-to-r from-clay-coral to-clay-pink text-white'
@@ -131,7 +131,7 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
               </button>
               <button
                 type="button"
-                onClick={() => setFormData({ ...formData, type: 'INCOME', category: '' })}
+                onClick={() => setFormData(prev => ({ ...prev, type: 'INCOME', category: '' }))}
                 className={`flex-1 py-2 px-4 font-medium transition duration-300 rounded-full ${
                   formData.type === 'INCOME'
                     ? 'bg-gradient-to-r from-clay-primary to-clay-secondary text-white'
@@ -172,7 +172,7 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
                   <button
                     type="button"
                     key={cat}
-                    onClick={() => setFormData({ ...formData, category: cat })}
+                    onClick={() => setFormData(prev => ({ ...prev, category: cat }))}
                     className={`flex flex-col items-center justify-center py-3 px-2 border-2 transition duration-300 ${
                       isSelected
                         ? `${config.color} border-current shadow-md scale-105`
@@ -195,7 +195,7 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
             value={amountInput}
             onChange={(e) => {
               setAmountInput(e.target.value);
-              setFormData({ ...formData, amount: e.target.value ? parseFloat(e.target.value) : 0 });
+              setFormData(prev => ({ ...prev, amount: e.target.value ? parseFloat(e.target.value) : 0 }));
             }}
             placeholder="0.00"
             min="0"
@@ -206,7 +206,7 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
           <Input
             label="Description"
             value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
             placeholder="e.g., Netflix Subscription"
             required
           />
@@ -217,7 +217,7 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
               type="date"
               name="startDate"
               value={formData.startDate}
-              onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+              onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
               required
             />
             <Input
@@ -225,7 +225,7 @@ export const RecurringModal: React.FC<RecurringModalProps> = ({
               type="date"
               name="endDate"
               value={formData.endDate || ''}
-              onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+              onChange={(e) => setFormData(prev => ({ ...prev, endDate: e.target.value }))}
             />
           </div>
 
