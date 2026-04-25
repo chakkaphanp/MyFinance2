@@ -22,7 +22,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     environment:
-      DATABASE_URL: postgresql://myfinance_user:myfinance_password@postgres:5432/myfinance
+      DATABASE_URL: postgres://myfinance_user:myfinance_password@pg-234314f5-tesco66-1310.c.aivencloud.com:11342/myfinance?sslmode=require
       JWT_SECRET: your-secret-key-here
       NODE_ENV: development
       PORT: 3000

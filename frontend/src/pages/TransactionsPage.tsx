@@ -73,16 +73,16 @@ export const TransactionsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-clay-light to-clay-white">
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="flex justify-between items-center mb-8">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900">Transactions</h1>
-            <p className="text-gray-600 mt-2">View and manage all your transactions</p>
+            <h1 className="text-4xl font-bold text-clay-dark">Transactions</h1>
+            <p className="text-clay-dark opacity-60 mt-2">View and manage all your transactions</p>
           </div>
-          <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
+          <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 whitespace-nowrap">
             <Plus size={20} />
             Add Transaction
           </Button>
@@ -90,7 +90,7 @@ export const TransactionsPage: React.FC = () => {
 
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">Loading transactions...</p>
+            <p className="text-clay-dark opacity-60">Loading transactions...</p>
           </div>
         ) : (
           <>

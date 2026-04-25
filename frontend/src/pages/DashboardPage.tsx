@@ -84,19 +84,19 @@ export const DashboardPage: React.FC = () => {
     }
   };
 
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
+  const COLORS = ['#3E6AE1', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-clay-light to-clay-white">
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex justify-between items-center mb-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-2">Welcome back! Here's your financial overview</p>
+            <h1 className="text-4xl font-bold text-clay-dark">Dashboard</h1>
+            <p className="text-clay-dark opacity-60 mt-2">Welcome back! Here's your financial overview</p>
           </div>
-          <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2">
+          <Button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 whitespace-nowrap">
             <Plus size={20} />
             Add Transaction
           </Button>
@@ -104,7 +104,7 @@ export const DashboardPage: React.FC = () => {
 
         {isLoading ? (
           <div className="text-center py-12">
-            <p className="text-gray-600">Loading dashboard...</p>
+            <p className="text-clay-dark opacity-60">Loading dashboard...</p>
           </div>
         ) : (
           <>
@@ -114,23 +114,25 @@ export const DashboardPage: React.FC = () => {
                 title="Total Balance"
                 value={formatCurrency(stats?.balance || 0, currency)}
                 subtitle="All time"
+                accent="blue"
               />
               <StatCard
                 title="Monthly Balance"
                 value={formatCurrency(stats?.monthlyBalance || 0, currency)}
                 subtitle="This month"
+                accent="blue"
               />
               <StatCard
                 title="Monthly Income"
                 value={formatCurrency(stats?.monthlyIncome || 0, currency)}
                 subtitle="This month"
-                className="bg-green-50 border-green-200"
+                accent="green"
               />
               <StatCard
                 title="Monthly Expense"
                 value={formatCurrency(stats?.monthlyExpense || 0, currency)}
                 subtitle="This month"
-                className="bg-red-50 border-red-200"
+                accent="orange"
               />
             </div>
 
@@ -138,31 +140,33 @@ export const DashboardPage: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
               {/* Monthly Trend */}
               <div className="lg:col-span-3 card">
-                <h2 className="text-xl font-bold mb-4">Monthly Trend</h2>
+                <h2 className="text-xl font-bold text-clay-dark mb-4">Monthly Trend</h2>
                 {trendData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={trendData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#EEEEEE" />
+                      <XAxis dataKey="month" stroke="#5C5E62" />
+                      <YAxis stroke="#5C5E62" />
+                      <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE' }} />
                       <Legend />
                       <Line
                         type="monotone"
                         dataKey="income"
                         stroke="#10B981"
                         name="Income"
+                        strokeWidth={2}
                       />
                       <Line
                         type="monotone"
                         dataKey="expense"
                         stroke="#EF4444"
                         name="Expense"
+                        strokeWidth={2}
                       />
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p className="text-center text-gray-500 py-12">No data available</p>
+                  <p className="text-center text-clay-dark opacity-60 py-12">No data available</p>
                 )}
               </div>
             </div>
@@ -171,7 +175,7 @@ export const DashboardPage: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Expense Distribution */}
               <div className="card">
-                <h2 className="text-xl font-bold mb-4">Expense Distribution</h2>
+                <h2 className="text-xl font-bold text-clay-dark mb-4">Expense Distribution</h2>
                 {expenseData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
@@ -188,17 +192,17 @@ export const DashboardPage: React.FC = () => {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p className="text-center text-gray-500 py-12">No expenses recorded</p>
+                  <p className="text-center text-clay-dark opacity-60 py-12">No expenses recorded</p>
                 )}
               </div>
 
               {/* Income Distribution */}
               <div className="card">
-                <h2 className="text-xl font-bold mb-4">Income Distribution</h2>
+                <h2 className="text-xl font-bold text-clay-dark mb-4">Income Distribution</h2>
                 {incomeData.length > 0 ? (
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
@@ -215,11 +219,11 @@ export const DashboardPage: React.FC = () => {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #EEEEEE' }} />
                     </PieChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p className="text-center text-gray-500 py-12">No income recorded</p>
+                  <p className="text-center text-clay-dark opacity-60 py-12">No income recorded</p>
                 )}
               </div>
             </div>
@@ -227,22 +231,22 @@ export const DashboardPage: React.FC = () => {
             {/* Expense Breakdown Table */}
             {expenseData.length > 0 && (
               <div className="card mb-8">
-                <h2 className="text-xl font-bold mb-4">Expense Breakdown</h2>
+                <h2 className="text-xl font-bold text-clay-dark mb-4">Expense Breakdown</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {expenseData.map((item, index) => (
-                    <div key={item.category} className="bg-red-50 p-4 rounded-lg border border-red-200">
+                    <div key={item.category} className="bg-gradient-to-br from-clay-light to-clay-white p-4 rounded border-none" style={{ borderRadius: '20px', boxShadow: '0 4px 12px rgba(255, 159, 90, 0.1)' }}>
                       <div className="flex items-center gap-2 mb-2">
                         <div
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: COLORS[index % COLORS.length] }}
                         ></div>
-                        <p className="font-medium text-gray-900">{item.category}</p>
+                        <p className="font-medium text-clay-dark">{item.category}</p>
                       </div>
-                      <p className="text-lg font-bold text-red-600">
+                      <p className="text-lg font-bold text-clay-coral">
                         {formatCurrency(item.amount, currency)}
                       </p>
-                      <p className="text-sm text-gray-600">{item.percentage.toFixed(1)}%</p>
-                      <p className="text-xs text-gray-500 mt-1">{item.count} transaction(s)</p>
+                      <p className="text-sm text-clay-dark opacity-60">{item.percentage.toFixed(1)}%</p>
+                      <p className="text-xs text-clay-dark opacity-50 mt-1">{item.count} transaction(s)</p>
                     </div>
                   ))}
                 </div>
@@ -252,22 +256,22 @@ export const DashboardPage: React.FC = () => {
             {/* Income Breakdown Table */}
             {incomeData.length > 0 && (
               <div className="card">
-                <h2 className="text-xl font-bold mb-4">Income Breakdown</h2>
+                <h2 className="text-xl font-bold text-clay-dark mb-4">Income Breakdown</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {incomeData.map((item, index) => (
-                    <div key={item.category} className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div key={item.category} className="bg-gradient-to-br from-clay-light to-clay-white p-4 rounded border-none" style={{ borderRadius: '20px', boxShadow: '0 4px 12px rgba(255, 159, 90, 0.1)' }}>
                       <div className="flex items-center gap-2 mb-2">
                         <div
                           className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: COLORS[index % COLORS.length] }}
                         ></div>
-                        <p className="font-medium text-gray-900">{item.category}</p>
+                        <p className="font-medium text-clay-dark">{item.category}</p>
                       </div>
-                      <p className="text-lg font-bold text-green-600">
+                      <p className="text-lg font-bold text-clay-primary">
                         {formatCurrency(item.amount, currency)}
                       </p>
-                      <p className="text-sm text-gray-600">{item.percentage.toFixed(1)}%</p>
-                      <p className="text-xs text-gray-500 mt-1">{item.count} transaction(s)</p>
+                      <p className="text-sm text-clay-dark opacity-60">{item.percentage.toFixed(1)}%</p>
+                      <p className="text-xs text-clay-dark opacity-50 mt-1">{item.count} transaction(s)</p>
                     </div>
                   ))}
                 </div>

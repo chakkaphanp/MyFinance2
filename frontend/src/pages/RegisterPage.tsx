@@ -38,18 +38,18 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-clay-light to-clay-white flex items-center justify-center p-4">
+      <div className="bg-gradient-to-br from-clay-white to-clay-light rounded p-8 w-full max-w-md" style={{ borderRadius: '24px', boxShadow: '0 20px 60px rgba(255, 159, 90, 0.15)' }}>
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold mx-auto">
+          <div className="w-12 h-12 bg-gradient-to-br from-clay-primary to-clay-secondary rounded flex items-center justify-center text-white font-bold mx-auto" style={{ borderRadius: '20px' }}>
             MF
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mt-4">Create Account</h1>
-          <p className="text-gray-600 mt-2">Start managing your finances</p>
+          <h1 className="text-3xl font-bold text-clay-dark mt-4">Create Account</h1>
+          <p className="text-clay-dark opacity-60 mt-2">Start managing your finances</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {error && <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm">{error}</div>}
+          {error && <div className="bg-gradient-to-r from-clay-coral to-clay-pink text-white p-3 rounded text-sm" style={{ borderRadius: '20px' }}>{error}</div>}
 
           <Input
             label="Full Name"
@@ -92,9 +92,9 @@ export const RegisterPage: React.FC = () => {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-600">
+          <p className="text-clay-dark opacity-70">
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-600 font-medium hover:underline">
+            <Link to="/login" className="text-clay-primary font-medium hover:text-clay-secondary">
               Sign in
             </Link>
           </p>

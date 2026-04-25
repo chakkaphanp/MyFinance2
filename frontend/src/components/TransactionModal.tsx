@@ -65,6 +65,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     date: new Date().toISOString().split('T')[0],
   });
 
+  const [amountInput, setAmountInput] = useState<string>('');
+
   useEffect(() => {
     if (isOpen) {
       setFormData({
@@ -74,6 +76,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         description: '',
         date: new Date().toISOString().split('T')[0],
       });
+      setAmountInput('');
     }
   }, [isOpen]);
 
@@ -83,10 +86,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-96 max-h-screen overflow-y-auto">
+      <div className="bg-gradient-to-br from-clay-white to-clay-light rounded p-6 w-96 max-h-screen overflow-y-auto" style={{ borderRadius: '24px', boxShadow: '0 20px 60px rgba(255, 159, 90, 0.2)' }}>
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Add Transaction</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <h2 className="text-2xl font-bold text-clay-dark">Add Transaction</h2>
+          <button onClick={onClose} className="text-clay-dark opacity-50 hover:opacity-100 transition-opacity" style={{ borderRadius: '20px' }}>
             <X size={24} />
           </button>
         </div>
@@ -102,11 +105,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                   category: '',
                 })
               }
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition ${
+              className={`flex-1 py-2 px-4 font-medium transition duration-300 rounded-full ${
                 formData.type === 'EXPENSE'
-                  ? 'bg-red-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-gradient-to-r from-clay-coral to-clay-pink text-white'
+                  : 'bg-clay-light text-clay-dark hover:bg-clay-gray'
               }`}
+              style={{ borderRadius: '20px' }}
             >
               Expense
             </button>
@@ -118,11 +122,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                   category: '',
                 })
               }
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition ${
+              className={`flex-1 py-2 px-4 font-medium transition duration-300 rounded-full ${
                 formData.type === 'INCOME'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  ? 'bg-gradient-to-r from-clay-primary to-clay-secondary text-white'
+                  : 'bg-clay-light text-clay-dark hover:bg-clay-gray'
               }`}
+              style={{ borderRadius: '20px' }}
             >
               Income
             </button>
@@ -141,11 +146,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 <button
                   key={cat}
                   onClick={() => setFormData({ ...formData, category: cat })}
-                  className={`flex flex-col items-center justify-center py-3 px-2 rounded-lg border-2 transition ${
+                  className={`flex flex-col items-center justify-center py-3 px-2 border-2 transition duration-300 ${
                     isSelected
                       ? `${config.color} border-current shadow-md scale-105`
                       : `${config.color} border-transparent hover:opacity-80`
                   }`}
+                  style={{ borderRadius: '20px' }}
                   title={cat}
                 >
                   <IconComponent size={20} className="mb-1" />
@@ -159,8 +165,11 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         <Input
           label="Amount"
           type="number"
-          value={formData.amount}
-          onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
+          value={amountInput}
+          onChange={(e) => {
+            setAmountInput(e.target.value);
+            setFormData({ ...formData, amount: e.target.value ? parseFloat(e.target.value) : 0 });
+          }}
           placeholder="0.00"
           min="0"
           step="0.01"
