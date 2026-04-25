@@ -5,6 +5,8 @@ import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { TransactionsPage } from './pages/TransactionsPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { BudgetsPage } from './pages/BudgetsPage';
+import { RecurringPage } from './pages/RecurringPage';
 import { Notification } from './components/Notification';
 import { useAuthStore } from './store/authStore';
 
@@ -47,6 +49,22 @@ export function App() {
           element={
             <ProtectedRoute>
               <SettingsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/budgets"
+          element={
+            <ProtectedRoute>
+              <BudgetsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/recurring"
+          element={
+            <ProtectedRoute>
+              <RecurringPage />
             </ProtectedRoute>
           }
         />

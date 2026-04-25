@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LogOut, Home, List, Settings, Menu, X } from 'lucide-react';
+import { LogOut, Home, List, Settings, Menu, X, Target, Repeat } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
@@ -20,6 +20,8 @@ export const Navbar: React.FC = () => {
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
     { path: '/transactions', label: 'Transactions', icon: List },
+    { path: '/budgets', label: 'Budgets', icon: Target },
+    { path: '/recurring', label: 'Recurring', icon: Repeat },
     { path: '/settings', label: 'Settings', icon: Settings },
   ];
 

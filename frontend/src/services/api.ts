@@ -46,3 +46,22 @@ export const dashboardAPI = {
   getMonthlyTrend: (months: number = 6) =>
     api.get('/dashboard/monthly-trend', { params: { months } }),
 };
+
+export const budgetAPI = {
+  create: (data: any) => api.post('/budgets', data),
+  list: (month: number, year: number) =>
+    api.get('/budgets', { params: { month, year } }),
+  alerts: () => api.get('/budgets/alerts'),
+  update: (id: string, data: any) => api.put(`/budgets/${id}`, data),
+  delete: (id: string) => api.delete(`/budgets/${id}`),
+};
+
+export const recurringAPI = {
+  create: (data: any) => api.post('/recurring', data),
+  list: () => api.get('/recurring'),
+  getUpcoming: (daysAhead?: number) =>
+    api.get('/recurring/upcoming', { params: { daysAhead } }),
+  update: (id: string, data: any) => api.put(`/recurring/${id}`, data),
+  delete: (id: string) => api.delete(`/recurring/${id}`),
+  process: () => api.post('/recurring/process'),
+};

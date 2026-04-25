@@ -62,3 +62,53 @@ export interface PaginatedResponse<T> {
   pageSize: number;
   hasMore: boolean;
 }
+
+export interface Budget {
+  id: string;
+  userId: string;
+  category: string;
+  limitAmount: number;
+  month: number;
+  year: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BudgetWithSpending extends Budget {
+  spent: number;
+  remaining: number;
+  percentUsed: number;
+  isExceeded: boolean;
+}
+
+export interface BudgetAlert {
+  budgetId: string;
+  category: string;
+  limitAmount: number;
+  spent: number;
+  remaining: number;
+  percentUsed: number;
+  isExceeded: boolean;
+  alertType: 'NORMAL' | 'WARNING' | 'EXCEEDED';
+}
+
+export type RecurrenceFrequency = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+
+export interface RecurringTransaction {
+  id: string;
+  userId: string;
+  type: TransactionType;
+  category: string;
+  amount: number;
+  description: string;
+  frequency: RecurrenceFrequency;
+  dayOfMonth?: number;
+  dayOfWeek?: number;
+  startDate: string; // ISO 8601
+  endDate?: string; // ISO 8601
+  isActive: boolean;
+  lastRunDate?: string; // ISO 8601
+  createdAt: string;
+  updatedAt: string;
+  nextOccurrenceDate?: string; // ISO 8601
+}

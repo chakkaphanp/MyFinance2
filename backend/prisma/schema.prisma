@@ -18,7 +18,9 @@ model User {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  transactions Transaction[]
+  transactions        Transaction[]
+  budgets             Budget[]
+  recurringTransactions RecurringTransaction[]
 }
 
 model Transaction {
@@ -37,4 +39,43 @@ model Transaction {
   @@index([userId])
   @@index([date])
   @@index([type])
+}
+
+model Budget {
+  id          String   @id @default(cuid())
+  userId      String
+  category    String
+  limitAmount Float
+  month       Int      // 1-12
+  year        Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, category, month, year])
+  @@index([userId])
+}
+
+model RecurringTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String   // 'INCOME' | 'EXPENSE'
+  category    String
+  amount      Float
+  description String
+  frequency   String   // 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'YEARLY'
+  dayOfMonth  Int?     // For monthly recurrence (1-31)
+  dayOfWeek   Int?     // For weekly recurrence (0-6, 0=Sunday)
+  startDate   DateTime
+  endDate     DateTime?
+  isActive    Boolean  @default(true)
+  lastRunDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isActive])
 }
